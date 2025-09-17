@@ -8,3 +8,5 @@ export function useQueryInput() {
   return { url, name };
 }
 
+
+
