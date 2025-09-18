@@ -7,10 +7,13 @@ import RecommendedProductsPage from "./pages/RecommendedProductsPage";
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<MainPage />} />
-      <Route path="/login" element={<LoginPage />} />
+      <Route path="/search" element={<MainPage />} />
+      <Route path="/" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />
-      <Route path="/recommended-products" element={<RecommendedProductsPage />} />
+      <Route
+        path="/recommended-products"
+        element={<RecommendedProductsPage />}
+      />
     </Routes>
   );
 }

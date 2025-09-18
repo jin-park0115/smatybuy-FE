@@ -1,13 +1,27 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import LoginHeader from "./LoginHeader";
 import LoginForm from "./LoginForm";
 import SocialLogin from "./SocialLogin";
 import Divider from "../ui/Divider";
+import { loginUser } from "../../services/auth";
+import { useAuthStore } from "../../store/authStore";
 
 export default function LoginPage() {
-  const handleLogin = (email: string, password: string) => {
-    // 로그인 로직 구현
-    console.log("로그인 시도:", { email, password });
+  const navigate = useNavigate();
+  const setToken = useAuthStore((s) => s.setToken);
+  const handleLogin = async (email: string, password: string) => {
+    try {
+      const { token } = await loginUser({ email, password });
+      setToken(token);
+      alert("로그인 성공!");
+      navigate("/search");
+    } catch (error: any) {
+      const message =
+        error?.response?.data?.message ||
+        "이메일 또는 비밀번호가 올바르지 않습니다";
+      alert(message);
+      console.error("로그인 실패", error);
+    }
   };
 
   const handleGoogleLogin = () => {
@@ -64,8 +78,14 @@ export default function LoginPage() {
         <div className="text-center mt-8">
           <p className="text-gray-500 text-xs">
             로그인하면 SmartBuy의{" "}
-            <a href="#" className="text-indigo-600 hover:text-indigo-500">이용약관</a> 및{" "}
-            <a href="#" className="text-indigo-600 hover:text-indigo-500">개인정보처리방침</a>에 동의하는 것으로 간주됩니다.
+            <a href="#" className="text-indigo-600 hover:text-indigo-500">
+              이용약관
+            </a>{" "}
+            및{" "}
+            <a href="#" className="text-indigo-600 hover:text-indigo-500">
+              개인정보처리방침
+            </a>
+            에 동의하는 것으로 간주됩니다.
           </p>
         </div>
       </div>

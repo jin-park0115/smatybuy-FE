@@ -1,18 +1,31 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import SignupHeader from "./SignupHeader";
 import SignupForm from "./SignupForm";
 import SocialLogin from "./SocialLogin";
 import Divider from "../ui/Divider";
+import { registerUser } from "../../services/auth";
 
 export default function SignupPage() {
-  const handleSignup = (data: {
+  const navigate = useNavigate();
+  const handleSignup = async (data: {
     name: string;
     email: string;
     password: string;
     confirmPassword: string;
   }) => {
-    // 회원가입 로직 구현
-    console.log("회원가입 시도:", data);
+    try {
+      await registerUser({
+        name: data.name,
+        email: data.email,
+        password: data.password,
+      });
+      alert("회원가입이 완료되었습니다. 로그인해주세요.");
+      navigate("/");
+    } catch (error: any) {
+      const message = error?.response?.data?.message || "회원가입에 실패했습니다";
+      alert(message);
+      console.error("회원가입 실패", error);
+    }
   };
 
   const handleGoogleLogin = () => {
@@ -56,7 +69,7 @@ export default function SignupPage() {
             <p className="text-gray-600 text-sm">
               이미 계정이 있으신가요?{" "}
               <Link
-                to="/login"
+                to="/"
                 className="text-indigo-600 hover:text-indigo-500 font-semibold transition-colors duration-200"
               >
                 로그인
@@ -69,12 +82,17 @@ export default function SignupPage() {
         <div className="text-center mt-8">
           <p className="text-gray-500 text-xs">
             회원가입하면 SmartBuy의{" "}
-            <a href="#" className="text-indigo-600 hover:text-indigo-500">이용약관</a> 및{" "}
-            <a href="#" className="text-indigo-600 hover:text-indigo-500">개인정보처리방침</a>에 동의하는 것으로 간주됩니다.
+            <a href="#" className="text-indigo-600 hover:text-indigo-500">
+              이용약관
+            </a>{" "}
+            및{" "}
+            <a href="#" className="text-indigo-600 hover:text-indigo-500">
+              개인정보처리방침
+            </a>
+            에 동의하는 것으로 간주됩니다.
           </p>
         </div>
       </div>
     </div>
   );
 }
-
