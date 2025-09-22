@@ -2,7 +2,7 @@ import { useState } from "react";
 
 interface SignupFormProps {
   onSubmit: (data: {
-    name: string;
+    // name: string;
     email: string;
     password: string;
     confirmPassword: string;
@@ -11,7 +11,7 @@ interface SignupFormProps {
 
 export default function SignupForm({ onSubmit }: SignupFormProps) {
   const [formData, setFormData] = useState({
-    name: "",
+    // name: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -21,9 +21,9 @@ export default function SignupForm({ onSubmit }: SignupFormProps) {
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
-    if (!formData.name.trim()) {
-      newErrors.name = "이름을 입력해주세요";
-    }
+    // if (!formData.name.trim()) {
+    //   newErrors.name = "이름을 입력해주세요";
+    // }
 
     if (!formData.email.trim()) {
       newErrors.email = "이메일을 입력해주세요";
@@ -33,8 +33,13 @@ export default function SignupForm({ onSubmit }: SignupFormProps) {
 
     if (!formData.password) {
       newErrors.password = "비밀번호를 입력해주세요";
-    } else if (formData.password.length < 8) {
-      newErrors.password = "비밀번호는 8자 이상이어야 합니다";
+    } else if (
+      !/^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/.test(
+        formData.password
+      )
+    ) {
+      newErrors.password =
+        "비밀번호는 8자 이상이며, 대문자/숫자/특수문자를 포함해야 합니다";
     }
 
     if (!formData.confirmPassword) {
@@ -44,6 +49,15 @@ export default function SignupForm({ onSubmit }: SignupFormProps) {
     }
 
     setErrors(newErrors);
+
+    if (newErrors.password || newErrors.confirmPassword) {
+      setFormData((prev) => ({
+        ...prev,
+        password: "",
+        confirmPassword: "",
+      }));
+    }
+
     return Object.keys(newErrors).length === 0;
   };
 
@@ -56,10 +70,10 @@ export default function SignupForm({ onSubmit }: SignupFormProps) {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
     // 에러가 있으면 해당 필드의 에러 제거
     if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: "" }));
+      setErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
 
@@ -67,10 +81,13 @@ export default function SignupForm({ onSubmit }: SignupFormProps) {
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* 이름 입력 */}
       <div>
-        <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+        {/* <label
+          htmlFor="name"
+          className="block text-sm font-medium text-gray-700 mb-2"
+        >
           이름
-        </label>
-        <input
+        </label> */}
+        {/* <input
           type="text"
           id="name"
           name="name"
@@ -80,7 +97,7 @@ export default function SignupForm({ onSubmit }: SignupFormProps) {
             errors.name ? "border-red-300 bg-red-50" : "border-gray-200 bg-white hover:border-gray-300"
           }`}
           placeholder="이름을 입력해주세요"
-        />
+        /> */}
         {errors.name && (
           <p className="mt-1 text-sm text-red-600">{errors.name}</p>
         )}
@@ -88,7 +105,10 @@ export default function SignupForm({ onSubmit }: SignupFormProps) {
 
       {/* 이메일 입력 */}
       <div>
-        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+        <label
+          htmlFor="email"
+          className="block text-sm font-medium text-gray-700 mb-2"
+        >
           이메일
         </label>
         <input
@@ -98,18 +118,23 @@ export default function SignupForm({ onSubmit }: SignupFormProps) {
           value={formData.email}
           onChange={handleChange}
           className={`w-full px-4 py-3 rounded-xl border-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent ${
-            errors.email ? "border-red-300 bg-red-50" : "border-gray-200 bg-white hover:border-gray-300"
+            errors.email
+              ? "border-red-300 bg-red-50"
+              : "border-gray-200 bg-white hover:border-gray-300"
           }`}
           placeholder="이메일을 입력해주세요"
         />
         {errors.email && (
-          <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+          <p className="mt-1 text-[9px] text-red-600">{errors.email}</p>
         )}
       </div>
 
       {/* 비밀번호 입력 */}
       <div>
-        <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+        <label
+          htmlFor="password"
+          className="block text-sm font-medium text-gray-700 mb-2"
+        >
           비밀번호
         </label>
         <input
@@ -119,18 +144,23 @@ export default function SignupForm({ onSubmit }: SignupFormProps) {
           value={formData.password}
           onChange={handleChange}
           className={`w-full px-4 py-3 rounded-xl border-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent ${
-            errors.password ? "border-red-300 bg-red-50" : "border-gray-200 bg-white hover:border-gray-300"
+            errors.password
+              ? "border-red-300 bg-red-50"
+              : "border-gray-200 bg-white hover:border-gray-300"
           }`}
           placeholder="비밀번호를 입력해주세요 (8자 이상)"
         />
         {errors.password && (
-          <p className="mt-1 text-sm text-red-600">{errors.password}</p>
+          <p className="mt-1 text-[9px] text-red-600">{errors.password}</p>
         )}
       </div>
 
       {/* 비밀번호 확인 입력 */}
       <div>
-        <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
+        <label
+          htmlFor="confirmPassword"
+          className="block text-sm font-medium text-gray-700 mb-2"
+        >
           비밀번호 확인
         </label>
         <input
@@ -140,12 +170,16 @@ export default function SignupForm({ onSubmit }: SignupFormProps) {
           value={formData.confirmPassword}
           onChange={handleChange}
           className={`w-full px-4 py-3 rounded-xl border-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent ${
-            errors.confirmPassword ? "border-red-300 bg-red-50" : "border-gray-200 bg-white hover:border-gray-300"
+            errors.confirmPassword
+              ? "border-red-300 bg-red-50"
+              : "border-gray-200 bg-white hover:border-gray-300"
           }`}
           placeholder="비밀번호를 다시 입력해주세요"
         />
         {errors.confirmPassword && (
-          <p className="mt-1 text-sm text-red-600">{errors.confirmPassword}</p>
+          <p className="mt-1 text-[9px] text-red-500">
+            {errors.confirmPassword}
+          </p>
         )}
       </div>
 
@@ -159,4 +193,3 @@ export default function SignupForm({ onSubmit }: SignupFormProps) {
     </form>
   );
 }
-

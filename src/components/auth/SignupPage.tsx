@@ -8,21 +8,22 @@ import { registerUser } from "../../services/auth";
 export default function SignupPage() {
   const navigate = useNavigate();
   const handleSignup = async (data: {
-    name: string;
+    // name: string;
     email: string;
     password: string;
     confirmPassword: string;
   }) => {
     try {
       await registerUser({
-        name: data.name,
+        // name: data.name,
         email: data.email,
         password: data.password,
       });
       alert("회원가입이 완료되었습니다. 로그인해주세요.");
       navigate("/");
     } catch (error: any) {
-      const message = error?.response?.data?.message || "회원가입에 실패했습니다";
+      const message =
+        error?.response?.data?.message || "회원가입에 실패했습니다";
       alert(message);
       console.error("회원가입 실패", error);
     }
